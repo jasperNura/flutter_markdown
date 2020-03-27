@@ -449,13 +449,15 @@ class MarkdownBuilder implements md.NodeVisitor {
     if (_inlines.isEmpty) return;
 
     WrapAlignment blockAlignment = WrapAlignment.start;
+    TextAlign textAlignmemt = TextAlign.start;
     if (_isBlockTag(_currentBlockTag)) {
       blockAlignment = _wrapAlignmentForBlockTag(_currentBlockTag);
+      textAlignmemt = _textAlignForBlockTag(_currentBlockTag);
     }
 
     final _InlineElement inline = _inlines.single;
     if (inline.children.isNotEmpty) {
-      List<Widget> mergedInlines = _mergeInlineChildren(inline.children);
+      List<Widget> mergedInlines = _mergeInlineChildren(inline.children, textAlign: textAlignmemt);
       final Wrap wrap = Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         children: mergedInlines,
@@ -467,7 +469,7 @@ class MarkdownBuilder implements md.NodeVisitor {
   }
 
   /// Merges adjacent [TextSpan] children
-  List<Widget> _mergeInlineChildren(List<Widget> children) {
+  List<Widget> _mergeInlineChildren(List<Widget> children, {TextAlign textAlign}) {
     List<Widget> mergedTexts = <Widget>[];
     for (Widget child in children) {
       if (mergedTexts.isNotEmpty &&
@@ -480,7 +482,7 @@ class MarkdownBuilder implements md.NodeVisitor {
             : [previousTextSpan];
         children.add(child.text);
         TextSpan mergedSpan = TextSpan(children: children);
-        mergedTexts.add(_buildRichText(mergedSpan));
+        mergedTexts.add(_buildRichText(mergedSpan, textAlign: textAlign));
       } else if (mergedTexts.isNotEmpty &&
           mergedTexts.last is SelectableText &&
           child is SelectableText) {
