@@ -239,9 +239,10 @@ class MarkdownBuilder implements md.NodeVisitor {
 
       if (current.children.isNotEmpty) {
         child = Column(
-          crossAxisAlignment: fitContent
-              ? CrossAxisAlignment.start
-              : CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          // crossAxisAlignment: fitContent
+          //     ? CrossAxisAlignment.start
+          //     : CrossAxisAlignment.stretch,
           children: current.children,
         );
       } else {
